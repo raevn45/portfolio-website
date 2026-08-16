@@ -3,6 +3,7 @@ import {createRoot} from 'react-dom/client';
 import {motion,AnimatePresence,useMotionValue,useSpring} from 'motion/react';
 import './styles.css';
 import './immersive.css';
+import './final.css';
 
 const PHOTO='https://drive.google.com/thumbnail?id=1dqoD_71QrvzLj8SpuukZhQsBSvtXtzqe&sz=w1600';
 const projects=[
