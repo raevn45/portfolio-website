@@ -2,153 +2,33 @@ import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles.css';
 
-const projects = [
-  { id: '01', name: 'CanBook', type: 'PRODUCT / WEB', year: '2026', note: 'A better way to pre-order school food.', url: 'https://github.com/raevn45/CanBook', accent: 'CAN', detail: '01 — PRODUCT' },
-  { id: '02', name: 'BridgeAI', type: 'AI / RESEARCH', year: '2026', note: 'Human–AI interaction, accessibility, comprehension.', url: 'https://github.com/raevn45/BridgeAI', accent: 'AI', detail: '02 — AI' },
-  { id: '03', name: 'BridgeAI Research', type: 'RESEARCH / ML', year: '2026', note: 'Exploring what generalisation actually means.', url: 'https://github.com/raevn45/BridgeAI-Research', accent: 'R', detail: '03 — RESEARCH' },
+const projects=[
+ {id:'01',name:'CanBook',tag:'PRODUCT / WEB',year:'26',text:'school food, but less painful',url:'https://github.com/raevn45/CanBook',symbol:'CAN'},
+ {id:'02',name:'BridgeAI',tag:'AI / HUMAN',year:'26',text:'making AI feel a little more human',url:'https://github.com/raevn45/BridgeAI',symbol:'AI'},
+ {id:'03',name:'BridgeAI Research',tag:'RESEARCH / ML',year:'26',text:'asking what generalisation really means',url:'https://github.com/raevn45/BridgeAI-Research',symbol:'R'}
 ];
+const life=['HEAD GIRL','TEDx','MUN','AI RESEARCH','BUILDING THINGS','HORROR MOVIES','FASHION','MAKEUP','STORIES','QUESTIONS'];
+const now=[['making','CanBook'],['thinking about','AI generalisation'],['learning','ML + design'],['organising','TEDx'],['wondering','what happens next']];
 
-const interests = ['AI', 'CODE', 'RESEARCH', 'PEOPLE', 'MUN', 'TEDx', 'HORROR', 'FASHION', 'STORIES', 'QUESTIONS'];
-const current = [
-  ['BUILDING', 'CanBook'],
-  ['RESEARCHING', 'AI generalisation'],
-  ['LEARNING', 'ML + design engineering'],
-  ['ORGANISING', 'TEDx'],
-  ['FIGURING OUT', 'what comes next'],
-];
-
-function App() {
-  const [menu, setMenu] = useState(false);
-  const [active, setActive] = useState(0);
-  const [cursor, setCursor] = useState({ x: 0, y: 0 });
-  const [cursorText, setCursorText] = useState('');
-  const [loaded, setLoaded] = useState(false);
-  const raf = useRef(null);
-
-  useEffect(() => {
-    requestAnimationFrame(() => setLoaded(true));
-    const move = (e) => {
-      if (raf.current) cancelAnimationFrame(raf.current);
-      raf.current = requestAnimationFrame(() => setCursor({ x: e.clientX, y: e.clientY }));
-    };
-    window.addEventListener('pointermove', move);
-    return () => {
-      window.removeEventListener('pointermove', move);
-      if (raf.current) cancelAnimationFrame(raf.current);
-    };
-  }, []);
-
-  const go = (id) => {
-    setMenu(false);
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const cursorProps = (text) => ({
-    onMouseEnter: () => setCursorText(text),
-    onMouseLeave: () => setCursorText(''),
-  });
-
-  return (
-    <div className={`site ${loaded ? 'is-loaded' : ''}`}>
-      <div className="noise" aria-hidden="true" />
-      <div className={`cursor ${cursorText ? 'has-label' : ''}`} style={{ left: cursor.x, top: cursor.y }} aria-hidden="true">
-        <span>{cursorText}</span>
-      </div>
-
-      <header className="nav">
-        <button className="logo" onClick={() => go('home')} {...cursorProps('HOME')}>PS<span>—</span></button>
-        <div className="nav-center">PORTFOLIO / 2026</div>
-        <button className={`menu-trigger ${menu ? 'active' : ''}`} onClick={() => setMenu(!menu)} {...cursorProps(menu ? 'CLOSE' : 'MENU')}>
-          <span>{menu ? 'CLOSE' : 'MENU'}</span><i><b /><b /></i>
-        </button>
-      </header>
-
-      <div className={`menu-panel ${menu ? 'open' : ''}`}>
-        <div className="menu-top">NAVIGATION <span>00—04</span></div>
-        <nav>
-          {[
-            ['00', 'HOME', 'home'],
-            ['01', 'WORK', 'work'],
-            ['02', 'ABOUT', 'about'],
-            ['03', 'NOW', 'now'],
-          ].map(([num, label, id]) => (
-            <button key={id} onClick={() => go(id)}>
-              <small>{num}</small><strong>{label}</strong><span>↗</span>
-            </button>
-          ))}
-        </nav>
-        <div className="menu-bottom">ABU DHABI, UAE <span>CURIOUS BY DEFAULT</span></div>
-      </div>
-
-      <main>
-        <section id="home" className="hero">
-          <div className="hero-top">
-            <p>DESIGNER / DEVELOPER / RESEARCHER</p>
-            <p>ABU DHABI — UAE</p>
-          </div>
-          <div className="hero-main">
-            <div className="hero-kicker">I MAKE THINGS.<br />SOMETIMES I KNOW WHY.</div>
-            <h1><span>PRESHITA</span><span className="indent">SHINDE</span></h1>
-            <div className="hero-side">SCROLL<br />TO EXPLORE<br /><span>↓</span></div>
-          </div>
-          <div className="hero-bottom">
-            <div className="hero-statement">CURIOUS ABOUT<br /><em>WHAT HAPPENS NEXT.</em></div>
-            <div className="hero-index">001 / 004</div>
-          </div>
-          <div className="hero-cross cross-a" /><div className="hero-cross cross-b" />
-        </section>
-
-        <section id="work" className="work">
-          <div className="section-head"><span>01</span><h2>SELECTED WORK</h2><span>HOVER TO PREVIEW / CLICK TO OPEN</span></div>
-          <div className="work-intro"><p>Things I built because<br /><i>I couldn't stop wondering.</i></p><span>03 PROJECTS<br />AND COUNTING</span></div>
-          <div className="projects">
-            {projects.map((project, index) => (
-              <a key={project.id} className={`project ${active === index ? 'active' : ''}`} href={project.url} target="_blank" rel="noreferrer"
-                onMouseEnter={() => { setActive(index); setCursorText('OPEN ↗'); }} onMouseLeave={() => setCursorText('')}>
-                <span className="project-no">{project.id}</span>
-                <div className="project-title-wrap"><h3>{project.name}</h3><p>{project.note}</p></div>
-                <span className="project-type">{project.type}<br />{project.year}</span>
-                <span className="project-arrow">↗</span>
-                <div className="project-preview"><div className={`preview-art art-${index}`}><span>{project.accent}</span><small>{project.detail}</small><i /></div></div>
-              </a>
-            ))}
-          </div>
-        </section>
-
-        <section id="about" className="about">
-          <div className="section-head light"><span>02</span><h2>A LITTLE CONTEXT</h2><span>NOT A RÉSUMÉ</span></div>
-          <div className="about-grid">
-            <p className="about-big">I LIKE <em>QUESTIONS</em><br />MORE THAN<br /><span>ANSWERS.</span></p>
-            <div className="about-copy">
-              <p>I build things at the intersection of technology, people and curiosity. Sometimes that's code. Sometimes it's research. Sometimes it's a question that refuses to go away.</p>
-              <p className="about-small">AI · PEOPLE · DESIGN · STORIES<br />MUN · TEDx · MAKING · LEARNING</p>
-            </div>
-          </div>
-          <div className="interest-field">
-            {interests.map((item, i) => <span key={item} style={{ '--n': i }} {...cursorProps('EXPLORE')}>{item}</span>)}
-          </div>
-        </section>
-
-        <section id="now" className="now">
-          <div className="section-head"><span>03</span><h2>CURRENTLY</h2><span>LIVE / 2026</span></div>
-          <div className="now-list">
-            {current.map(([label, value], i) => (
-              <div className="now-row" key={label}>
-                <span className="now-num">0{i + 1}</span><span className="now-label">{label}</span><strong>{value}</strong><span className="now-mark">↗</span>
-              </div>
-            ))}
-          </div>
-          <div className="now-footer"><span>THE SITE IS ALSO A PROJECT.</span><span>MORE SOON — PROBABLY.</span></div>
-        </section>
-
-        <footer className="footer">
-          <div className="footer-top"><span>04 — SAY HI</span><span>NO FORM. JUST WORDS.</span></div>
-          <a className="footer-email" href="mailto:preshita@example.com" {...cursorProps('EMAIL')}>LET'S TALK<span>↗</span></a>
-          <div className="footer-bottom"><span>PRESHITA SHINDE</span><a href="https://github.com/raevn45" target="_blank" rel="noreferrer" {...cursorProps('GITHUB')}>GITHUB ↗</a><span>© 2026</span></div>
-        </footer>
-      </main>
-    </div>
-  );
+function App(){
+ const [menu,setMenu]=useState(false),[cursor,setCursor]=useState({x:-100,y:-100}),[mode,setMode]=useState(''),[active,setActive]=useState(null),[intro,setIntro]=useState(true),[clock,setClock]=useState('');
+ const preview=useRef(null),raf=useRef(null);
+ useEffect(()=>{const t=setTimeout(()=>setIntro(false),1400);const tick=()=>setClock(new Intl.DateTimeFormat('en',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Asia/Dubai'}).format(new Date()));tick();const iv=setInterval(tick,30000);const move=e=>{if(raf.current)cancelAnimationFrame(raf.current);raf.current=requestAnimationFrame(()=>{setCursor({x:e.clientX,y:e.clientY});if(preview.current){preview.current.style.left=`${e.clientX+22}px`;preview.current.style.top=`${e.clientY+22}px`}})};window.addEventListener('pointermove',move);return()=>{clearTimeout(t);clearInterval(iv);window.removeEventListener('pointermove',move);if(raf.current)cancelAnimationFrame(raf.current)}},[]);
+ const go=id=>{setMenu(false);document.getElementById(id)?.scrollIntoView({behavior:'smooth'})};
+ const interactive=m=>({onMouseEnter:()=>setMode(m),onMouseLeave:()=>setMode('')});
+ return <div className="site">
+  {intro&&<div className="intro"><div className="intro-line"><span>PS</span><span>2026</span></div><div className="intro-name">PRESHITA<br/><i>SHINDE</i></div><div className="intro-foot">LOADING A PERSON, NOT A RÉSUMÉ</div></div>}
+  <div className={`cursor ${mode?'cursor-active':''}`} style={{left:cursor.x,top:cursor.y}}><span>{mode}</span></div><div className="noise"/>
+  <header className="nav"><button className="logo" onClick={()=>go('home')} {...interactive('HOME')}>PS<span>↘</span></button><div className="nav-live"><span>ABU DHABI</span><b>{clock}</b></div><button className={`menu-trigger ${menu?'is-open':''}`} onClick={()=>setMenu(!menu)} {...interactive(menu?'CLOSE':'MENU')}><span>MENU</span><i><b/><b/></i></button></header>
+  <div className={`menu-screen ${menu?'is-open':''}`}><div className="menu-meta"><span>WHERE TO?</span><span>00 — 04</span></div><div className="menu-links">{[['00','HOME','home'],['01','THINGS I MADE','work'],['02','WHO I AM','about'],['03','RIGHT NOW','now']].map(([n,l,id])=><button key={id} onClick={()=>go(id)} {...interactive('GO')}><small>{n}</small><strong>{l}</strong><em>↗</em></button>)}</div><div className="menu-bottom"><span>curious by default.</span><a href="mailto:preshitashinde09@gmail.com">preshitashinde09@gmail.com</a></div></div>
+  <main>
+   <section id="home" className="hero"><div className="hero-top"><span>01 / 04</span><span>NOT A PORTFOLIO. PROBABLY.</span></div><div className="hero-center"><div className="hero-note">HI, I'M PRESHITA.<br/><i>I LIKE MAKING THINGS.</i></div><h1><span>PRESHITA</span><span className="shift">SHINDE</span></h1><div className="hero-annotation"><span>↘</span> developer<br/>researcher<br/>professional question-asker</div></div><div className="hero-bottom"><div><span className="blink-dot"/> currently somewhere between <i>“what if?”</i> and <i>“let's build it.”</i></div><button onClick={()=>go('work')} {...interactive('SCROLL')}>KEEP GOING ↓</button></div><div className="scribble s1">?</div><div className="scribble s2">↗</div><div className="scribble s3">interesting.</div></section>
+   <section id="work" className="work"><div className="section-top"><span>02 / 04</span><span>THINGS I MADE</span><span>03 / SO FAR</span></div><div className="work-heading"><h2>stuff that<br/><i>escaped my brain.</i></h2><p>Hover. Don't overthink it.<br/>Click if something catches you.</p></div><div className="project-list">{projects.map((p,i)=><a className={`project ${active===i?'selected':''}`} href={p.url} target="_blank" rel="noreferrer" key={p.id} onMouseEnter={()=>{setActive(i);setMode('OPEN ↗')}} onMouseLeave={()=>{setActive(null);setMode('')}}><span className="p-num">{p.id}</span><div className="p-name"><h3>{p.name}</h3><p>{p.text}</p></div><span className="p-tag">{p.tag}<br/>20{p.year}</span><span className="p-arrow">↗</span></a>)}</div><div ref={preview} className={`floating-preview ${active!==null?'show':''}`}>{active!==null&&<><span>{projects[active].symbol}</span><small>{projects[active].tag}</small><i>hover / click</i></>}</div></section>
+   <section className="life-strip"><div className="strip-label">A FEW THINGS THAT HAVE HAPPENED</div><div className="marquee"><div>{[...life,...life].map((x,i)=><span key={i}>{x}<b>✳</b></span>)}</div></div></section>
+   <section id="about" className="about"><div className="section-top light"><span>03 / 04</span><span>A LITTLE CONTEXT</span><span>NO, REALLY.</span></div><div className="about-top"><div className="about-sticker">MADE OF<br/><strong>QUESTIONS</strong><br/>+ TOO MANY TABS</div><h2>I DON'T REALLY<br/>KNOW WHAT I'LL<br/><i>BE YET.</i></h2></div><div className="about-bottom"><p>And I think that's fun. I'm interested in technology because it lets me turn a question into something I can actually touch, break, test, redesign and show someone.</p><p>AI. People. Research. Design. Stories. MUN. TEDx. Weird ideas at inconvenient hours.</p></div><div className="interest-cloud">{['AI','PEOPLE','CODE','RESEARCH','MUN','TEDx','HORROR','FASHION','MAKEUP','STORIES','WHY?','WHAT IF?'].map((x,i)=><span key={x} className={`cloud-${i}`} {...interactive('HI')}>{x}</span>)}</div></section>
+   <section id="now" className="now"><div className="section-top"><span>04 / 04</span><span>RIGHT NOW</span><span>LIVE / 2026</span></div><div className="now-intro"><h2>currently<br/><i>obsessed with</i>...</h2><span>← things change.<br/>so this does too.</span></div><div className="now-list">{now.map(([a,b],i)=><div className="now-row" key={a}><span>0{i+1}</span><em>{a}</em><strong>{b}</strong><i>↗</i></div>)}</div><div className="now-marquee"><span>STILL FIGURING IT OUT · STILL MAKING THINGS · STILL CURIOUS · </span><span>STILL FIGURING IT OUT · STILL MAKING THINGS · STILL CURIOUS · </span></div></section>
+   <footer className="footer"><div className="footer-meta"><span>YOU MADE IT THIS FAR.</span><span>THAT'S KIND OF NICE.</span></div><div className="footer-main"><div className="footer-question">want to<br/><i>say hi?</i></div><a href="mailto:preshitashinde09@gmail.com" {...interactive('EMAIL')}>preshitashinde09<br/>@gmail.com <span>↗</span></a></div><div className="footer-bottom"><span>PRESHITA SHINDE</span><a href="https://github.com/raevn45" target="_blank" rel="noreferrer" {...interactive('GITHUB')}>GITHUB ↗</a><span>ABU DHABI / 2026</span></div></footer>
+  </main>
+ </div>
 }
-
-createRoot(document.getElementById('root')).render(<App />);
+createRoot(document.getElementById('root')).render(<App/>);
