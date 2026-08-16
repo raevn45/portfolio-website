@@ -1,6 +1,7 @@
 import React,{useEffect,useRef,useState}from'react';
 import{createRoot}from'react-dom/client';
 import'./site.css';
+import'./visual-overrides.css';
 
 const PHOTO='https://drive.google.com/thumbnail?id=1dqoD_71QrvzLj8SpuukZhQsBSvtXtzqe&sz=w1600';
 const projects=[
