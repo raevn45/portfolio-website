@@ -5,9 +5,9 @@ import'./visual-overrides.css';
 
 const PHOTO='https://drive.google.com/thumbnail?id=1dqoD_71QrvzLj8SpuukZhQsBSvtXtzqe&sz=w1600';
 const projects=[
-{n:'01',title:'CANBOOK',kicker:'PRODUCT / BUILD',copy:'I got tired of pretending the canteen could not be fixed.',color:'lime',href:'https://github.com/raevn45/CanBook'},
-{n:'02',title:'BRIDGEAI',kicker:'AI / ACCESSIBILITY',copy:'What if AI made difficult information feel less difficult?',color:'cyan',href:'https://github.com/raevn45/BridgeAI'},
-{n:'03',title:'RESEARCH',kicker:'AI / ML / QUESTIONS',copy:'Questions I kept coming back to after everyone else moved on.',color:'pink',href:'https://github.com/raevn45/BridgeAI-Research'}];
+{n:'01',title:'CANBOOK',kicker:'PRODUCT / BUILD',copy:'A real-world canteen problem turned into a product I could actually use.',color:'lime',href:'https://canbook.vercel.app/'},
+{n:'02',title:'BRIDGEAI',kicker:'AI / ACCESSIBILITY',copy:'Exploring how AI can make difficult information easier to understand.',color:'cyan',href:'https://bridge-ai-research--raevn.replit.app/'},
+{n:'03',title:'RESEARCH',kicker:'AI / ML / QUESTIONS',copy:'Questions I kept following after the obvious answers stopped being interesting.',color:'pink',href:'https://bridge-ai-research--raevn.replit.app/'}];
 const interests=['AI','MUN','TEDx','HORROR','FASHION','MAKEUP','PEOPLE','STORIES','DESIGN','RESEARCH','QUESTIONS','BUILDING'];
 
 function App(){
