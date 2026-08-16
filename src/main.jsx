@@ -1,17 +1,217 @@
-import React,{useEffect,useRef,useState} from 'react';
-import {createRoot} from 'react-dom/client';
-import {motion,AnimatePresence,useMotionValue,useSpring} from 'motion/react';
+import React, { useEffect, useRef, useState } from 'react';
+import { createRoot } from 'react-dom/client';
+import { motion } from 'motion/react';
 import './styles.css';
 import './immersive.css';
 import './final.css';
+import './experience.css';
 
-const PHOTO='https://drive.google.com/thumbnail?id=1dqoD_71QrvzLj8SpuukZhQsBSvtXtzqe&sz=w1600';
-const projects=[
- {id:'01',title:'CanBook',type:'PRODUCT / 2026',desc:'A school canteen ordering system that turns a messy queue into a calmer little machine.',href:'https://github.com/raevn45/CanBook',className:'canbook'},
- {id:'02',title:'BridgeAI',type:'AI / 2026',desc:'Exploring how human-centred AI can make difficult information easier to understand.',href:'https://github.com/raevn45/BridgeAI',className:'bridge'},
- {id:'03',title:'Research',type:'RESEARCH / 2026',desc:'Experiments, questions, models, failures, patterns — the rabbit holes behind the builds.',href:'https://github.com/raevn45/BridgeAI-Research',className:'research'}
+const PHOTO = 'https://drive.google.com/thumbnail?id=1dqoD_71QrvzLj8SpuukZhQsBSvtXtzqe&sz=w1600';
+
+const projects = [
+  { id: '01', title: 'CanBook', label: 'PRODUCT / WEB', text: 'A calmer way to order from a school canteen.', href: 'https://github.com/raevn45/CanBook', tone: 'lime' },
+  { id: '02', title: 'BridgeAI', label: 'AI / PRODUCT', text: 'Human-centred AI, accessibility and comprehension.', href: 'https://github.com/raevn45/BridgeAI', tone: 'blue' },
+  { id: '03', title: 'Research', label: 'RESEARCH / ML', text: 'Experiments, questions and rabbit holes.', href: 'https://github.com/raevn45/BridgeAI-Research', tone: 'pink' }
 ];
-const interests=['AI','MUN','TEDx','HORROR','FASHION','MAKEUP','PEOPLE','STORIES','RESEARCH','DESIGN','QUESTIONS','BUILDING'];
-function LivingField(){const ref=useRef(null);const mouse=useRef({x:0,y:0});useEffect(()=>{const c=ref.current,ctx=c.getContext('2d');let raf;const dots=Array.from({length:180},()=>({x:Math.random(),y:Math.random(),r:Math.random()*2+0.5,vx:(Math.random()-.5)*.00045,vy:(Math.random()-.5)*.00045,h:Math.random()*360}));const resize=()=>{const d=Math.min(devicePixelRatio,2);c.width=innerWidth*d;c.height=innerHeight*d;ctx.setTransform(d,0,0,d,0,0)};const move=e=>{mouse.current={x:e.clientX,y:e.clientY}};resize();addEventListener('resize',resize);addEventListener('pointermove',move);const draw=()=>{const w=innerWidth,h=innerHeight,mx=mouse.current.x,my=mouse.current.y;ctx.clearRect(0,0,w,h);const g=ctx.createRadialGradient(mx,my,0,mx,my,Math.min(w,h)*.7);g.addColorStop(0,'rgba(255,255,255,.23)');g.addColorStop(.2,'rgba(120,150,255,.14)');g.addColorStop(.45,'rgba(255,70,190,.07)');g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.fillRect(0,0,w,h);dots.forEach((p,i)=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>1)p.vx*=-1;if(p.y<0||p.y>1)p.vy*=-1;const px=p.x*w,py=p.y*h,dx=mx-px,dy=my-py,d=Math.hypot(dx,dy);if(d<220){p.x+=(dx/w)*.0015;p.y+=(dy/h)*.0015}ctx.beginPath();ctx.arc(px,py,p.r,0,Math.PI*2);ctx.fillStyle=`hsla(${p.h},90%,78%,${.28+(1-Math.min(d/500,1))*.35})`;ctx.fill();if(d<130){ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(mx,my);ctx.strokeStyle=`rgba(255,255,255,${.13*(1-d/130)})`;ctx.stroke()}if(i>0&&i%3===0){const q=dots[i-1],qx=q.x*w,qy=q.y*h,dd=Math.hypot(px-qx,py-qy);if(dd<95){ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(qx,qy);ctx.strokeStyle='rgba(255,255,255,.055)';ctx.stroke()}}});raf=requestAnimationFrame(draw)};draw();return()=>{cancelAnimationFrame(raf);removeEventListener('resize',resize);removeEventListener('pointermove',move)}},[]);return <canvas ref={ref} className="field"/>}
-function App(){const[menu,setMenu]=useState(false),[hover,setHover]=useState(null),[now,setNow]=useState('');const x=useMotionValue(0),y=useMotionValue(0),sx=useSpring(x,{stiffness:260,damping:25}),sy=useSpring(y,{stiffness:260,damping:25});useEffect(()=>{const m=e=>{x.set(e.clientX+14);y.set(e.clientY+14)};addEventListener('pointermove',m);const tick=()=>setNow(new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Dubai',hour:'2-digit',minute:'2-digit'}).format(new Date()));tick();const id=setInterval(tick,30000);return()=>{removeEventListener('pointermove',m);clearInterval(id)}},[]);const jump=id=>{setMenu(false);document.getElementById(id)?.scrollIntoView({behavior:'smooth'})};return <div className="app"><LivingField/><div className="vignette"/><motion.div className="cursor" style={{left:sx,top:sy}}><span>{hover!==null?'VIEW':'MOVE'}</span></motion.div><header className="hud"><button className="logo" onClick={()=>jump('home')} aria-label="Preshita home"><span>P</span><i>S</i></button><div className="hud-center">PRESHITA SHINDE <b>·</b> DESIGN / CODE / AI / QUESTIONS</div><div className="hud-right"><span>{now} GST</span><button onClick={()=>setMenu(true)}>INDEX <b>↗</b></button></div></header><AnimatePresence>{menu&&<motion.div className="menu" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}><div className="menu-grid"><div className="menu-top"><span>PS / 2026</span><button onClick={()=>setMenu(false)}>CLOSE ×</button></div><div className="menu-links">{[['01','HOME','home'],['02','WORK','work'],['03','ME','me'],['04','NOW','now']].map(([n,t,id])=><button key={id} onClick={()=>jump(id)}><small>{n}</small><strong>{t}</strong><em>↗</em></button>)}</div><div className="menu-foot"><a href="mailto:preshitashinde09@gmail.com">preshitashinde09@gmail.com</a><span>MOVE YOUR MOUSE.</span></div></div></motion.div></AnimatePresence><main id="home"><section className="hero"><div className="hero-grid"/><div className="hero-kicker">HELLO, I'M PRESHITA<br/><span>ABU DHABI / INDIA / EVERYWHERE ONLINE</span></div><div className="hero-coords">{now}<br/>24°28' N / 54°22' E</div><div className="hero-title"><motion.div initial={{y:90,opacity:0}} animate={{y:0,opacity:1}} transition={{duration:1.2,ease:[.16,1,.3,1]}}>HELLO<span>.</span></motion.div><div className="hero-name"><b>PRESHITA</b><em>SHINDE</em></div></div><motion.div className="photo" initial={{scale:.65,rotate:12,opacity:0}} animate={{scale:1,rotate:-7,opacity:1}} transition={{delay:.5,type:'spring',stiffness:110,damping:14}}><img src={PHOTO} alt="Preshita Shinde"/><span>THAT'S ME ↗</span></motion.div><div className="hero-note">I build things.<br/>I ask questions.<br/>I get distracted by<br/>interesting things.</div><div className="hero-bottom"><span>SCROLL TO EXPLORE</span><span>01 — 04</span><span>↘</span></div></section><section className="intro-section" id="me"><div className="section-label">01 / ABOUT <span>THIS IS ME</span></div><div className="intro-copy"><h2>I like the space<br/>between <i>ideas</i><br/>and <b>things.</b></h2><div className="intro-side"><p>Computer science is one part of it. AI, research, products, MUN, TEDx, people, fashion, horror movies and ridiculous questions are some of the others.</p><p className="mono">I don't have a neat category.<br/>GOOD.</p></div></div><div className="sticker">CURIOUS<br/><span>BY DEFAULT</span></div></section><section className="work" id="work"><div className="section-label">02 / SELECTED WORK <span>HOVER THE ROWS</span></div><div className="work-intro"><h2>things<br/><i>i made.</i></h2><p>Projects are where the rabbit holes become real.<br/>Click a row. The pointer is watching.</p></div><div className="project-list">{projects.map((p,i)=><a className="project-row" href={p.href} target="_blank" rel="noreferrer" key={p.id} onMouseEnter={()=>setHover(i)} onMouseLeave={()=>setHover(null)}><small>{p.id}</small><div className="project-title"><h3>{p.title}</h3><p>{p.desc}</p></div><span>{p.type}</span><b>↗</b><AnimatePresence>{hover===i&&<motion.div className={`project-art ${p.className}`} initial={{opacity:0,scale:.6,rotate:-12}} animate={{opacity:1,scale:1,rotate:i===1?7:-5}} exit={{opacity:0,scale:.7}} transition={{type:'spring',stiffness:180,damping:16}}><div className="art-noise"/><strong>{p.title}</strong><small>{p.id} / LIVE OBJECT</small></motion.div>}</AnimatePresence></a>)}</div></section><section className="interests"><div className="section-label">03 / OTHER TABS <span>DRAG ANYTHING</span></div><h2>my brain<br/><i>has tabs.</i></h2><div className="tab-field">{interests.map((t,i)=><motion.button key={t} drag dragElastic={.25} whileHover={{scale:1.1}} whileDrag={{scale:1.18,rotate:i%2?7:-5,zIndex:10}} className={`tab t${i}`}>{t}</motion.button>)}<div className="tab-caption">not a skills section.<br/>just things i can't stop<br/><b>being interested in.</b></div></div></section><section className="now" id="now"><div className="section-label">04 / CURRENTLY <span>LIVE STATE</span></div><div className="now-heading">RIGHT<br/><i>NOW.</i></div><div className="now-list"><div><small>BUILDING</small><b>CANBOOK</b><span>product / web</span></div><div><small>EXPLORING</small><b>AI + HUMAN SYSTEMS</b><span>research / questions</span></div><div><small>DOING</small><b>MUN / TEDx / PEOPLE</b><span>organising / leading / listening</span></div><div><small>WATCHING</small><b>HORROR MOVIES</b><span>excellent decisions</span></div></div></section><footer><div className="footer-mark">PS<span>✦</span></div><div className="footer-title">SEE<br/><i>YOU.</i></div><a className="email" href="mailto:preshitashinde09@gmail.com">preshitashinde09@gmail.com ↗</a><div className="footer-row"><span>© 2026 PRESHITA SHINDE</span><a href="https://github.com/raevn45" target="_blank" rel="noreferrer">GITHUB ↗</a><span>YOU MADE IT.</span></div></footer></main></div>}
-createRoot(document.getElementById('root')).render(<App/>);
+
+const tabs = ['AI', 'MUN', 'TEDx', 'HORROR', 'FASHION', 'MAKEUP', 'PEOPLE', 'STORIES', 'RESEARCH', 'DESIGN', 'QUESTIONS', 'BUILDING'];
+
+function PointerField() {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    const pointer = { x: -500, y: -500 };
+    const particles = Array.from({ length: 115 }, () => ({
+      x: Math.random(),
+      y: Math.random(),
+      vx: (Math.random() - 0.5) * 0.00025,
+      vy: (Math.random() - 0.5) * 0.00025,
+      size: Math.random() * 2 + 0.5
+    }));
+    let frame;
+
+    const resize = () => {
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = window.innerWidth * ratio;
+      canvas.height = window.innerHeight * ratio;
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    };
+
+    const move = (event) => {
+      pointer.x = event.clientX;
+      pointer.y = event.clientY;
+    };
+
+    const draw = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      ctx.clearRect(0, 0, width, height);
+
+      const glow = ctx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, 360);
+      glow.addColorStop(0, 'rgba(226,255,48,.24)');
+      glow.addColorStop(0.25, 'rgba(83,99,255,.16)');
+      glow.addColorStop(0.6, 'rgba(255,72,173,.08)');
+      glow.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, width, height);
+
+      particles.forEach((particle) => {
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        if (particle.x < 0 || particle.x > 1) particle.vx *= -1;
+        if (particle.y < 0 || particle.y > 1) particle.vy *= -1;
+
+        const x = particle.x * width;
+        const y = particle.y * height;
+        const distance = Math.hypot(pointer.x - x, pointer.y - y);
+        if (distance < 170) {
+          particle.x += ((pointer.x - x) / width) * 0.0007;
+          particle.y += ((pointer.y - y) / height) * 0.0007;
+        }
+
+        ctx.beginPath();
+        ctx.arc(x, y, particle.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${distance < 170 ? 0.72 : 0.24})`;
+        ctx.fill();
+      });
+
+      frame = requestAnimationFrame(draw);
+    };
+
+    resize();
+    draw();
+    window.addEventListener('resize', resize);
+    window.addEventListener('pointermove', move);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('resize', resize);
+      window.removeEventListener('pointermove', move);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="experience-field" aria-hidden="true" />;
+}
+
+function App() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [hovered, setHovered] = useState(null);
+  const [clock, setClock] = useState('');
+
+  useEffect(() => {
+    const update = () => setClock(new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Asia/Dubai',
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(new Date()));
+    update();
+    const interval = window.setInterval(update, 30000);
+    return () => window.clearInterval(interval);
+  }, []);
+
+  const go = (id) => {
+    setMenuOpen(false);
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  return (
+    <div className="experience">
+      <PointerField />
+      <div className="experience-noise" aria-hidden="true" />
+
+      <header className="experience-header">
+        <button className="experience-logo" onClick={() => go('top')} aria-label="Home">
+          <span>P</span><i>S</i>
+        </button>
+        <div className="experience-status">PRESHITA SHINDE <span>·</span> {clock} GST</div>
+        <button className="experience-index" onClick={() => setMenuOpen(true)}>INDEX <span>↗</span></button>
+      </header>
+
+      {menuOpen && (
+        <motion.div className="experience-menu" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          <div className="menu-inner">
+            <div className="menu-top"><span>PS / 2026</span><button onClick={() => setMenuOpen(false)}>CLOSE ×</button></div>
+            <nav>
+              {[['01', 'HOME', 'top'], ['02', 'WORK', 'work'], ['03', 'ME', 'me'], ['04', 'NOW', 'now']].map(([number, name, id]) => (
+                <button key={id} onClick={() => go(id)}><small>{number}</small><strong>{name}</strong><span>↗</span></button>
+              ))}
+            </nav>
+            <a href="mailto:preshitashinde09@gmail.com" className="menu-email">preshitashinde09@gmail.com ↗</a>
+          </div>
+        </motion.div>
+      )}
+
+      <main>
+        <section className="experience-hero" id="top">
+          <div className="hero-mini">HELLO / THIS IS PRESHITA'S INTERNET</div>
+          <div className="hero-location">ABU DHABI<br />24°28' N / 54°22' E</div>
+          <div className="hero-type"><span>HELLO</span><b>PRESHITA</b><em>SHINDE</em></div>
+          <motion.div className="hero-photo" initial={{ opacity: 0, scale: 0.7, rotate: 8 }} animate={{ opacity: 1, scale: 1, rotate: -6 }} transition={{ duration: 1.1, type: 'spring' }}>
+            <img src={PHOTO} alt="Preshita Shinde" />
+            <span>THAT'S ME ↗</span>
+          </motion.div>
+          <div className="hero-sticker">CURIOUS<br /><b>BY DEFAULT</b></div>
+          <div className="hero-line">SCROLL / MOVE / CLICK / PLAY</div>
+          <div className="hero-arrow">↓</div>
+        </section>
+
+        <section className="statement" id="me">
+          <div className="section-meta">01 / ME <span>NO RESUME ENERGY</span></div>
+          <div className="statement-layout">
+            <h2>I LIKE<br /><i>IDEAS</i><br />THAT BECOME<br /><b>REAL.</b></h2>
+            <div className="statement-copy">
+              <p>Computer science, AI, research, products, MUN, TEDx, people, fashion, horror movies, stories and questions I probably should have left alone.</p>
+              <p>I follow whatever gets interesting.</p>
+            </div>
+          </div>
+          <div className="statement-mark">PS</div>
+        </section>
+
+        <section className="work-experience" id="work">
+          <div className="section-meta">02 / WORK <span>MOVE OVER A PROJECT</span></div>
+          <div className="work-heading"><h2>THINGS<br /><i>I MADE.</i></h2><p>Not a case-study archive.<br />Just the things I couldn't leave alone.</p></div>
+          <div className="project-stack">
+            {projects.map((project, index) => (
+              <a key={project.id} href={project.href} target="_blank" rel="noreferrer" className={`experience-project ${project.tone}`} onMouseEnter={() => setHovered(index)} onMouseLeave={() => setHovered(null)}>
+                <small>{project.id}</small>
+                <div><h3>{project.title}</h3><p>{project.text}</p></div>
+                <span>{project.label}</span><b>↗</b>
+                {hovered === index && <motion.div className="project-pop" initial={{ opacity: 0, scale: 0.5, rotate: -10 }} animate={{ opacity: 1, scale: 1, rotate: index === 1 ? 5 : -5 }}><strong>{project.title}</strong><small>{project.id} / CLICK ME</small><div className="pop-shape" /></motion.div>}
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <section className="tabs-experience">
+          <div className="section-meta">03 / OTHER TABS <span>DRAG THEM</span></div>
+          <h2>MY BRAIN<br /><i>HAS TABS.</i></h2>
+          <div className="tab-world">
+            {tabs.map((tab, index) => <motion.button key={tab} className={`tab-item tab-${index}`} drag dragElastic={0.3} whileHover={{ scale: 1.08 }} whileDrag={{ scale: 1.18, rotate: index % 2 ? 7 : -7 }}>{tab}</motion.button>)}
+            <p>not skills.<br />not keywords.<br /><b>just interests.</b></p>
+          </div>
+        </section>
+
+        <section className="now-experience" id="now">
+          <div className="section-meta">04 / NOW <span>LIVE STATE</span></div>
+          <h2>RIGHT<br /><i>NOW.</i></h2>
+          <div className="now-cards">
+            <div><small>BUILDING</small><b>CANBOOK</b><span>product / web</span></div>
+            <div><small>EXPLORING</small><b>AI + HUMAN SYSTEMS</b><span>research / questions</span></div>
+            <div><small>DOING</small><b>MUN / TEDx / PEOPLE</b><span>organising / leading / listening</span></div>
+            <div><small>WATCHING</small><b>HORROR MOVIES</b><span>excellent decisions</span></div>
+          </div>
+        </section>
+
+        <footer className="experience-footer">
+          <div className="footer-ps">PS ✦</div>
+          <h2>SEE<br /><i>YOU.</i></h2>
+          <a href="mailto:preshitashinde09@gmail.com">preshitashinde09@gmail.com ↗</a>
+          <div><span>© 2026 PRESHITA SHINDE</span><a href="https://github.com/raevn45" target="_blank" rel="noreferrer">GITHUB ↗</a><span>END OF INTERNET</span></div>
+        </footer>
+      </main>
+    </div>
+  );
+}
+
+createRoot(document.getElementById('root')).render(<App />);
