@@ -1,74 +1,89 @@
 import React,{useEffect,useRef,useState}from'react';
 import{createRoot}from'react-dom/client';
-import'./site.css';
+import'./experience.css';
 
 const PHOTO='https://drive.google.com/thumbnail?id=1dqoD_71QrvzLj8SpuukZhQsBSvtXtzqe&sz=w1600';
 const projects=[
- {n:'01',title:'CANBOOK',type:'PRODUCT / WEB',copy:'A real-world canteen problem turned into a product.',href:'https://canbook.vercel.app/',tone:'red'},
- {n:'02',title:'BRIDGEAI',type:'AI / ACCESSIBILITY',copy:'Exploring how AI can make difficult information easier to understand.',href:'https://bridge-ai-research--raevn.replit.app/',tone:'blue'},
- {n:'03',title:'RESEARCH',type:'AI / ML / QUESTIONS',copy:'Following questions after the obvious answers stop being interesting.',href:'https://bridge-ai-research--raevn.replit.app/',tone:'yellow'}
+ {id:'01',title:'CanBook',tag:'PRODUCT / WEB',desc:'A canteen problem turned into something people can actually use.',href:'https://canbook.vercel.app/',tone:'orange',label:'OPEN CANBOOK'},
+ {id:'02',title:'BridgeAI',tag:'AI / ACCESSIBILITY',desc:'Researching how AI can make difficult information easier to understand.',href:'https://bridge-ai-research--raevn.replit.app/',tone:'violet',label:'OPEN BRIDGEAI'},
+ {id:'03',title:'Research',tag:'AI / ML / QUESTIONS',desc:'Following questions after the obvious answers stop being interesting.',href:'https://bridge-ai-research--raevn.replit.app/',tone:'lime',label:'EXPLORE'}
 ];
-const tabs=['AI','MUN','TEDx','HORROR','FASHION','MAKEUP','PEOPLE','STORIES','DESIGN','RESEARCH','QUESTIONS','BUILDING'];
+const interests=['AI','MUN','TEDx','HORROR','FASHION','MAKEUP','PEOPLE','STORIES','DESIGN','RESEARCH','QUESTIONS','BUILDING'];
 
 function App(){
- const[menu,setMenu]=useState(false),[active,setActive]=useState('HOME'),[mouse,setMouse]=useState({x:-100,y:-100}),[hover,setHover]=useState('');
- const drag=useRef(null);
- useEffect(()=>{const onMove=e=>setMouse({x:e.clientX,y:e.clientY});addEventListener('pointermove',onMove,{passive:true});return()=>removeEventListener('pointermove',onMove)},[]);
- useEffect(()=>{const sections=[...document.querySelectorAll('[data-section]')];const io=new IntersectionObserver(es=>{const hit=es.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(hit)setActive(hit.target.dataset.section)},{threshold:.45});sections.forEach(s=>io.observe(s));return()=>io.disconnect()},[]);
- const go=id=>{setMenu(false);document.getElementById(id)?.scrollIntoView({behavior:'smooth'})};
- const startDrag=(e,i)=>{drag.current={i,dx:e.clientX,dy:e.clientY,el:e.currentTarget};e.currentTarget.setPointerCapture?.(e.pointerId)};
- const dragMove=e=>{if(!drag.current)return;const d=drag.current;d.el.style.setProperty('--dx',`${e.clientX-d.dx}px`);d.el.style.setProperty('--dy',`${e.clientY-d.dy}px`)};
- const endDrag=()=>{if(drag.current){drag.current.el.style.setProperty('--dx','0px');drag.current.el.style.setProperty('--dy','0px');drag.current=null}};
- return <div className="app" onPointerMove={dragMove} onPointerUp={endDrag}>
-  <div className="grain"/><div className="cursor" style={{left:mouse.x,top:mouse.y}}><span>{hover||'MOVE'}</span></div>
-  <header className="topbar"><button className="logo" onClick={()=>go('home')} onMouseEnter={()=>setHover('HOME')} onMouseLeave={()=>setHover('')}><b>PS</b><span>PRESHITA<br/>SHINDE</span></button><div className="ticker">PERSONAL WEBSITE / 2026 / ABU DHABI / <i>STAY CURIOUS</i></div><button className="menu-btn" onClick={()=>setMenu(true)} onMouseEnter={()=>setHover('INDEX')} onMouseLeave={()=>setHover('')}>INDEX <b>+</b></button></header>
-  <div className={`index-panel ${menu?'is-open':''}`}><button className="close" onClick={()=>setMenu(false)}>CLOSE ×</button><div className="index-intro">YOU ARE INSIDE<br/><strong>PRESHITA'S<br/>INTERNET.</strong></div><nav>{[['01','HOME','home'],['02','ABOUT','about'],['03','BUILT','work'],['04','OTHER TABS','life'],['05','NOW','now'],['06','CONTACT','contact']].map(x=><button key={x[2]} onClick={()=>go(x[2])}><small>{x[0]}</small><span>{x[1]}</span><i>↗</i></button>)}</nav><div className="index-foot"><span>SCROLL IS THE INTERFACE.</span><a href="mailto:preshitashinde09@gmail.com">EMAIL ↗</a></div></div>
+ const[menu,setMenu]=useState(false),[cursor,setCursor]=useState({x:-100,y:-100}),[cursorText,setCursorText]=useState('MOVE'),[active,setActive]=useState('01');
+ const scrollRef=useRef(0);
+ useEffect(()=>{
+  const move=e=>setCursor({x:e.clientX,y:e.clientY});
+  const scroll=()=>{scrollRef.current=window.scrollY;document.documentElement.style.setProperty('--scroll',`${window.scrollY}px`)};
+  addEventListener('pointermove',move,{passive:true});addEventListener('scroll',scroll,{passive:true});scroll();
+  const els=[...document.querySelectorAll('[data-id]')];
+  const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('seen')}),{threshold:.18});els.forEach(e=>io.observe(e));
+  return()=>{removeEventListener('pointermove',move);removeEventListener('scroll',scroll);io.disconnect()};
+ },[]);
+ const go=id=>{setMenu(false);document.getElementById(id)?.scrollIntoView({behavior:'smooth'});};
+ return <div className="site">
+  <div className="noise"/><div className="cursor" style={{left:cursor.x,top:cursor.y}}><span>{cursorText}</span></div>
+  <div className="progress"><i/></div>
+  <header className="nav">
+   <button className="brand" onClick={()=>go('home')} onMouseEnter={()=>setCursorText('HOME')} onMouseLeave={()=>setCursorText('MOVE')}><strong>PS</strong><span>PRESHITA<br/>SHINDE</span></button>
+   <div className="nav-center">A PERSONAL INTERNET / 2026</div>
+   <button className="index" onClick={()=>setMenu(true)} onMouseEnter={()=>setCursorText('OPEN')} onMouseLeave={()=>setCursorText('MOVE')}>INDEX <b>+</b></button>
+  </header>
+  <aside className={`drawer ${menu?'open':''}`}><button onClick={()=>setMenu(false)}>CLOSE <b>×</b></button><p>YOU ARE HERE.</p><h2>PRESHITA'S<br/><em>INTERNET.</em></h2><nav>{[['01','HOME','home'],['02','ABOUT','about'],['03','BUILT','work'],['04','TABS','tabs'],['05','NOW','now'],['06','CONTACT','contact']].map(x=><button key={x[2]} onClick={()=>go(x[2])}><small>{x[0]}</small><span>{x[1]}</span><i>↗</i></button>)}</nav><a href="mailto:preshitashinde09@gmail.com">preshitashinde09@gmail.com ↗</a></aside>
+
   <main>
-   <section id="home" data-section="HOME" className="scene hero">
-    <div className="hero-orbit orbit-a"/><div className="hero-orbit orbit-b"/><div className="hero-star">✳</div>
-    <div className="hero-stamp">PERSONAL<br/>INTERNET<br/><small>EST. 2026</small></div>
-    <div className="hero-copy"><p className="eyebrow">HELLO, I'M</p><h1>PRESHITA<br/><em>SHINDE.</em></h1><p className="hero-line">I build things, ask too many questions,<br/>and follow interesting rabbit holes.</p></div>
-    <figure className="hero-photo" onMouseEnter={()=>setHover('LOOK')} onMouseLeave={()=>setHover('')}><div className="photo-frame"><img src={PHOTO} alt="Preshita Shinde"/><span>THAT'S ME →</span></div><figcaption>01 / human behind the tabs</figcaption></figure>
-    <div className="hero-foot"><span>AI / PEOPLE / PRODUCTS / QUESTIONS</span><b>SCROLL ↓</b></div>
-    <div className="side-note">NOT A RESUME<br/>NOT A BRAND<br/><strong>JUST ME.</strong></div>
+   <section id="home" data-id="01" className="world world-home">
+    <div className="home-grid"/><div className="home-sun"/><div className="home-orbit o1"/><div className="home-orbit o2"/>
+    <div className="home-meta"><span>ABU DHABI, UAE</span><span>12°58' N / 77°35' E</span></div>
+    <div className="home-copy"><div className="tiny">WELCOME TO MY SIDE OF THE INTERNET</div><h1>PRESHITA<br/><em>SHINDE</em></h1><p>I build things.<br/>I ask questions.<br/>I get distracted beautifully.</p></div>
+    <figure className="portrait" onMouseEnter={()=>setCursorText('THAT’S ME')} onMouseLeave={()=>setCursorText('MOVE')}><div><img src={PHOTO} alt="Preshita Shinde"/><b>PS / 01</b></div><figcaption>human / curious / currently online</figcaption></figure>
+    <div className="home-bottom"><span>AI · PEOPLE · PRODUCTS · QUESTIONS</span><b>SCROLL TO ENTER ↓</b></div>
+    <div className="home-sticker">NOT A RESUME<br/><em>AN EXPERIENCE.</em></div>
    </section>
 
-   <section className="transition transition-one" aria-hidden="true"><div className="portal"><span>KEEP GOING</span><b>↓</b></div><div className="giant-word">CURIOUS</div></section>
+   <section className="portal portal-blue"><div className="portal-ring r1"/><div className="portal-ring r2"/><div className="portal-word">ABOUT<br/><em>ME</em></div><span>KEEP SCROLLING / YOU'RE MOVING THROUGH THE SITE</span></section>
 
-   <section id="about" data-section="ABOUT" className="scene about">
-    <div className="section-head"><span>02</span><b>ABOUT / NOT THE LINKEDIN VERSION</b><span>SCROLL + LOOK</span></div>
-    <div className="about-layout"><div className="about-big">I LIKE<br/><em>QUESTIONS.</em></div><div className="about-copy"><p className="huge">Curious about AI, people, products, research, stories, fashion, horror movies and whatever weird thing catches my attention next.</p><p>CS is one part of it. Building is another. People are another. I don't want to reduce all of that to one job title.</p><div className="hand-note">← THIS IS PROBABLY<br/>WHY I HAVE SO MANY TABS OPEN.</div></div></div>
-    <div className="about-strip"><span>CURIOUS</span><span>HUMAN</span><span>EXPERIMENTAL</span><span>STILL FIGURING IT OUT</span></div>
-    <div className="about-number">02</div>
+   <section id="about" data-id="02" className="world about-world">
+    <div className="label"><span>02</span><b>ABOUT.TXT</b><span>READ / LOOK / MOVE</span></div>
+    <div className="about-map"><div className="map-line l1"/><div className="map-line l2"/><div className="map-dot d1"/><div className="map-dot d2"/><div className="map-dot d3"/></div>
+    <div className="about-title"><span>THE SHORT VERSION</span><h2>I LIKE<br/><em>QUESTIONS.</em></h2></div>
+    <div className="about-note note-one">CS is one part.<br/>Building is another.</div>
+    <div className="about-copy"><p>I'm curious about AI, people, products, research, stories, fashion, horror movies and whatever weird thing catches my attention next.</p><p>I care more about <em>what could be</em> than having the perfect label for what I am.</p></div>
+    <div className="about-tape">CURIOUS / HUMAN / EXPERIMENTAL / A LITTLE CHAOTIC</div>
    </section>
 
-   <section className="transition transition-paper" aria-hidden="true"><div className="paper-lines"/><div className="falling">THINGS<br/><i>START<br/>HERE.</i></div></section>
+   <section className="portal portal-paper"><div className="paper-window"><span>loading://things-i-built</span><b>×</b><i/><i/><i/></div><strong>THINGS<br/><em>I BUILD.</em></strong></section>
 
-   <section id="work" data-section="BUILT" className="scene work">
-    <div className="section-head"><span>03</span><b>THINGS I BUILT</b><span>OPEN A PROJECT ↗</span></div>
-    <div className="work-intro"><div><span>NO GIANT LIST.</span><h2>I<br/><em>BUILD.</em><br/>THINGS.</h2></div><p>Small problems. Weird ideas. Lots of trying. These are the things that made it out of my head and onto the internet.</p></div>
-    <div className="projects">{projects.map(p=><a className={`project ${p.tone}`} key={p.n} href={p.href} target="_blank" rel="noreferrer" onMouseEnter={()=>setHover('OPEN')} onMouseLeave={()=>setHover('')}><span className="project-no">{p.n}</span><div className="project-info"><small>{p.type}</small><h3>{p.title}</h3><p>{p.copy}</p></div><div className="project-shape"><i/><b>↗</b></div></a>)}</div>
-    <div className="work-footer">THE LINKS ABOVE LEAVE THIS SITE.<span>THAT'S THE POINT.</span></div>
+   <section id="work" data-id="03" className="world work-world">
+    <div className="label"><span>03</span><b>WORK / CLICK TO OPEN</b><span>03 OBJECTS</span></div>
+    <div className="work-head"><span>MADE IT OUT OF MY HEAD.</span><h2>I BUILD<br/><em>THINGS.</em></h2><p>Real projects, not project-shaped paragraphs. Click one and leave this site.</p></div>
+    <div className="project-stack">{projects.map((p,i)=><a key={p.id} href={p.href} target="_blank" rel="noreferrer" className={`project-window ${p.tone}`} style={{'--i':i}} onMouseEnter={()=>setCursorText('OPEN')} onMouseLeave={()=>setCursorText('MOVE')}>
+      <div className="window-bar"><span><i/><i/><i/></span><small>{p.id} / {p.tag}</small><b>↗</b></div><div className="window-body"><div className="project-num">{p.id}</div><div><h3>{p.title}</h3><p>{p.desc}</p><span>{p.label} ↗</span></div><div className="project-art"><div className="art-orbit"/><strong>{p.title.slice(0,2).toUpperCase()}</strong></div></div>
+    </a>)}</div>
    </section>
 
-   <section className="transition transition-color" aria-hidden="true"><div className="spin-copy">OPEN<br/><em>OTHER<br/>TABS.</em></div><div className="ticker-big">MUN / TEDx / HORROR / FASHION / MAKEUP / PEOPLE / STORIES / DESIGN / AI / RESEARCH /</div></section>
+   <section className="portal portal-pink"><div className="pink-type">OTHER<br/><em>TABS.</em></div><div className="pink-marquee">MUN · TEDx · HORROR · FASHION · MAKEUP · PEOPLE · STORIES · DESIGN · AI · RESEARCH ·</div></section>
 
-   <section id="life" data-section="OTHER TABS" className="scene life">
-    <div className="section-head"><span>04</span><b>THE OTHER TABS</b><span>DRAG THEM</span></div><div className="life-title"><span>MY BRAIN IS</span><h2>OPEN<br/><em>24/7.</em></h2></div>
-    <div className="tab-cloud">{tabs.map((t,i)=><button key={t} className={`tab t${i}`} onPointerDown={e=>startDrag(e,i)} onMouseEnter={()=>setHover('DRAG')} onMouseLeave={()=>setHover('')}><span>{String(i+1).padStart(2,'0')}</span>{t}</button>)}</div>
-    <div className="life-center">NONE OF THESE ARE<br/><strong>SKILLS.</strong><small>THEY'RE RABBIT HOLES.</small></div>
-    <div className="life-rail">MUN → TEDx → HEAD GIRL → BUILDING → RESEARCH → PEOPLE → STORIES →</div>
+   <section id="tabs" data-id="04" className="world tabs-world">
+    <div className="label"><span>04</span><b>MY OTHER TABS</b><span>MOVE YOUR CURSOR</span></div><div className="tabs-heading"><span>MY BRAIN IS</span><h2>OPEN<br/><em>24/7.</em></h2></div>
+    <div className="interest-orbit">{interests.map((x,i)=><span key={x} style={{'--n':i}} onMouseEnter={()=>setCursorText(x)} onMouseLeave={()=>setCursorText('MOVE')}>{x}</span>)}</div>
+    <div className="tabs-center"><small>NONE OF THESE ARE SKILLS.</small><strong>THEY'RE<br/>RABBIT HOLES.</strong><span>01 — 12</span></div>
+    <div className="tabs-bottom">MUN → TEDx → HEAD GIRL → BUILDING → RESEARCH → PEOPLE → STORIES →</div>
    </section>
 
-   <section className="transition transition-night" aria-hidden="true"><div className="night-grid"/><div className="night-line">RIGHT NOW / RIGHT HERE / KEEP SCROLLING</div><div className="night-star">✦</div></section>
+   <section className="portal portal-night"><div className="night-floor"/><div className="night-copy">RIGHT NOW<br/><em>→</em></div><span>SCROLL / CONTINUE</span></section>
 
-   <section id="now" data-section="NOW" className="scene now">
-    <div className="section-head"><span>05</span><b>RIGHT NOW</b><span>LIVE / 2026</span></div><div className="now-wrap"><div className="now-title"><span>CURRENTLY SOMEWHERE BETWEEN</span><h2>BUILDING<br/><em>AND</em><br/>FIGURING<br/>IT OUT.</h2></div><div className="now-cards"><div><small>BUILDING</small><b>CANBOOK</b><p>product / web</p></div><div><small>EXPLORING</small><b>AI + HUMAN SYSTEMS</b><p>research / questions</p></div><div><small>DOING</small><b>MUN / TEDx / PEOPLE</b><p>leading / listening</p></div><div><small>WATCHING</small><b>HORROR MOVIES</b><p>excellent decisions</p></div></div></div>
+   <section id="now" data-id="05" className="world now-world">
+    <div className="label"><span>05</span><b>NOW / LIVE</b><span>2026</span></div><div className="now-title"><span>CURRENTLY SOMEWHERE BETWEEN</span><h2>BUILDING<br/><em>AND</em><br/>FIGURING<br/>IT OUT.</h2></div>
+    <div className="now-list"><div><small>BUILDING</small><b>CANBOOK</b><span>product / web</span></div><div><small>EXPLORING</small><b>AI + HUMAN SYSTEMS</b><span>research / questions</span></div><div><small>DOING</small><b>MUN / TEDx / PEOPLE</b><span>leading / listening</span></div><div><small>WATCHING</small><b>HORROR MOVIES</b><span>excellent decisions</span></div></div>
    </section>
 
-   <section className="transition transition-final" aria-hidden="true"><div className="final-orbit"/><span>ONE LAST THING →</span></section>
+   <section className="portal portal-final"><div className="final-window"><span>preshita@internet:~$</span><strong>./say-goodbye</strong><i>thanks for visiting.</i></div></section>
 
-   <footer id="contact" data-section="CONTACT" className="scene contact"><div className="contact-top"><span>06 / END</span><span>YOU MADE IT.</span><span>PS / 2026</span></div><div className="contact-body"><div><span>IF YOU MADE IT THIS FAR,</span><h2>LET'S<br/><em>TALK.</em></h2></div><a className="email" href="mailto:preshitashinde09@gmail.com" onMouseEnter={()=>setHover('EMAIL')} onMouseLeave={()=>setHover('')}>preshitashinde09@gmail.com <b>↗</b></a></div><div className="contact-bottom"><span>ABU DHABI / UAE</span><a href="https://github.com/raevn45" target="_blank" rel="noreferrer">GITHUB ↗</a><span>COME BACK SOON.</span></div></footer>
+   <footer id="contact" data-id="06" className="world contact-world">
+    <div className="label"><span>06</span><b>CONTACT / END</b><span>PS / 2026</span></div><div className="contact-wrap"><div><span>YOU FOUND ME.</span><h2>LET'S<br/><em>TALK.</em></h2></div><a href="mailto:preshitashinde09@gmail.com" onMouseEnter={()=>setCursorText('EMAIL')} onMouseLeave={()=>setCursorText('MOVE')}>preshitashinde09@gmail.com <b>↗</b></a></div><div className="contact-foot"><span>ABU DHABI / UAE</span><a href="https://github.com/raevn45" target="_blank" rel="noreferrer">GITHUB ↗</a><span>END OF INTERNET.</span></div>
+   </footer>
   </main>
  </div>
 }
