@@ -1,0 +1,52 @@
+/* Preshita visual direction: MIXED MEDIA × SURREALISM × NEO-BRUTALISM */
+
+/* Mixed media: make the portrait feel like a found editorial object, not a card */
+.portrait{width:min(20vw,285px);transform:rotate(-4deg);filter:drop-shadow(18px 24px 0 rgba(223,255,32,.55));}
+.portrait>div{padding:10px 10px 34px;background:#f6f0df;border:2px solid #111;box-shadow:12px 12px 0 #111;}
+.portrait img{filter:contrast(1.08) saturate(1.08);}
+.portrait small{position:absolute;left:18px;bottom:8px;color:#111;background:var(--lime);padding:4px 6px;transform:rotate(-3deg);}
+.portrait:after{content:'HI.';position:absolute;right:-28px;top:-25px;font:italic 38px/1 var(--serif);color:var(--pink);transform:rotate(8deg);text-shadow:2px 2px #111;}
+
+/* Neo-brutalist chrome: hard edges, intentional blocks, fewer pills */
+.hero-tags span{border-radius:0;border:2px solid #fff;padding:8px 11px;box-shadow:4px 4px 0 #111;}
+.hero-tags span:nth-child(2),.hero-tags span:nth-child(4){border-color:#111;box-shadow:4px 4px 0 #111;}
+.index,.mark{border-radius:0;}
+.index{border:1px solid currentColor;padding:7px 10px;}
+.project{border-bottom:2px solid #2a2b30;}
+.project:hover{padding-left:34px;box-shadow:10px 10px 0 rgba(223,255,32,.75);}
+.project-art{border:2px solid #fff;box-shadow:10px 10px 0 var(--pink);}
+.project-art:before{border:0;}
+
+/* Surrealism: oversized off-register forms quietly drift behind content */
+.hero:after{content:'?';position:absolute;right:11%;bottom:8%;font:italic clamp(110px,18vw,260px)/.6 var(--serif);color:rgba(255,75,154,.16);transform:rotate(13deg);pointer-events:none;z-index:1;}
+.about:after{content:'';position:absolute;right:-8vw;top:12%;width:min(30vw,430px);aspect-ratio:1;border-radius:47% 53% 61% 39%;background:var(--pink);mix-blend-mode:multiply;opacity:.18;transform:rotate(-17deg);animation:surrealFloat 9s ease-in-out infinite alternate;pointer-events:none;}
+.work:after{content:'01';position:absolute;right:4vw;top:15vh;font:italic 28vw/.6 var(--serif);color:rgba(113,233,255,.035);transform:rotate(-12deg);pointer-events:none;}
+.life:after{content:'∞';position:absolute;right:8vw;bottom:5vh;font:italic 32vw/.5 var(--serif);color:rgba(255,255,255,.11);transform:rotate(9deg);pointer-events:none;}
+@keyframes surrealFloat{to{transform:translate3d(-25px,35px,0) rotate(8deg) scale(1.08)}}
+
+/* The contact scene is a real layout, not absolutely-positioned text fighting the footer */
+.contact{overflow:hidden;display:flex;flex-direction:column;min-height:100svh;}
+.contact-top{position:relative;z-index:5;flex:0 0 auto;}
+.contact-main{position:relative;z-index:5;margin:clamp(9vh,15vh,17vh) 0 auto 7vw;padding-bottom:14vh;max-width:900px;}
+.contact-main h2{margin:18px 0 48px;max-width:8ch;font-size:clamp(92px,15vw,220px);line-height:.62;overflow:visible;}
+.contact-main a{display:inline-block;max-width:100%;overflow-wrap:anywhere;}
+.contact-bottom{position:relative;left:auto;right:auto;bottom:auto;z-index:5;margin:0 0 0 0;padding-top:18px;border-top:2px solid #111;flex:0 0 auto;}
+.contact-bottom a{color:#111;}
+
+/* Better type rhythm for the three-style blend */
+.about-copy .lead{font-family:var(--serif);font-style:italic;font-size:clamp(28px,3vw,46px);line-height:.98;}
+.about-title i{display:inline-block;transform:rotate(-2deg);}
+.work-heading h2 i{font-family:var(--serif);font-weight:400;transform:rotate(-4deg);display:inline-block;}
+.now h2 i{display:inline-block;transform:rotate(-5deg);}
+
+@media(max-width:900px){
+ .portrait{width:145px;right:5vw;top:46%;filter:drop-shadow(9px 12px 0 rgba(223,255,32,.5));}
+ .portrait>div{box-shadow:7px 7px 0 #111;}
+ .portrait:after{right:-18px;top:-18px;font-size:28px;}
+ .project:hover{padding-left:18px;}
+ .contact-main{margin:11vh 0 auto 5vw;padding-right:5vw;padding-bottom:12vh;}
+ .contact-main h2{font-size:clamp(84px,22vw,155px);max-width:7ch;margin-bottom:42px;}
+ .contact-main a{font-size:17px;line-height:1.2;}
+ .contact-bottom{margin:0 5vw;flex-wrap:wrap;row-gap:10px;}
+ .contact-bottom span:last-child{display:none;}
+}
