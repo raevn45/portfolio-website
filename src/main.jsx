@@ -1,33 +1,44 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles.css';
 
-const projects=[
- {id:'01',name:'CanBook',tag:'PRODUCT / WEB',year:'26',text:'school food, but less painful',url:'https://github.com/raevn45/CanBook',symbol:'CAN'},
- {id:'02',name:'BridgeAI',tag:'AI / HUMAN',year:'26',text:'making AI feel a little more human',url:'https://github.com/raevn45/BridgeAI',symbol:'AI'},
- {id:'03',name:'BridgeAI Research',tag:'RESEARCH / ML',year:'26',text:'asking what generalisation really means',url:'https://github.com/raevn45/BridgeAI-Research',symbol:'R'}
+const projects = [
+  { n:'01', name:'CANBOOK', type:'PRODUCT / WEB', note:'the school-canteen problem that became a product', url:'https://github.com/raevn45/CanBook', art:'can' },
+  { n:'02', name:'BRIDGEAI', type:'AI / HUMAN', note:'trying to make technology feel more understandable', url:'https://github.com/raevn45/BridgeAI', art:'bridge' },
+  { n:'03', name:'BRIDGEAI RESEARCH', type:'RESEARCH / ML', note:'questions about whether models actually generalise', url:'https://github.com/raevn45/BridgeAI-Research', art:'research' }
 ];
-const life=['HEAD GIRL','TEDx','MUN','AI RESEARCH','BUILDING THINGS','HORROR MOVIES','FASHION','MAKEUP','STORIES','QUESTIONS'];
-const now=[['making','CanBook'],['thinking about','AI generalisation'],['learning','ML + design'],['organising','TEDx'],['wondering','what happens next']];
 
 function App(){
- const [menu,setMenu]=useState(false),[cursor,setCursor]=useState({x:-100,y:-100}),[mode,setMode]=useState(''),[active,setActive]=useState(null),[intro,setIntro]=useState(true),[clock,setClock]=useState('');
- const preview=useRef(null),raf=useRef(null);
- useEffect(()=>{const t=setTimeout(()=>setIntro(false),1400);const tick=()=>setClock(new Intl.DateTimeFormat('en',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Asia/Dubai'}).format(new Date()));tick();const iv=setInterval(tick,30000);const move=e=>{if(raf.current)cancelAnimationFrame(raf.current);raf.current=requestAnimationFrame(()=>{setCursor({x:e.clientX,y:e.clientY});if(preview.current){preview.current.style.left=`${e.clientX+22}px`;preview.current.style.top=`${e.clientY+22}px`}})};window.addEventListener('pointermove',move);return()=>{clearTimeout(t);clearInterval(iv);window.removeEventListener('pointermove',move);if(raf.current)cancelAnimationFrame(raf.current)}},[]);
- const go=id=>{setMenu(false);document.getElementById(id)?.scrollIntoView({behavior:'smooth'})};
- const interactive=m=>({onMouseEnter:()=>setMode(m),onMouseLeave:()=>setMode('')});
- return <div className="site">
-  {intro&&<div className="intro"><div className="intro-line"><span>PS</span><span>2026</span></div><div className="intro-name">PRESHITA<br/><i>SHINDE</i></div><div className="intro-foot">LOADING A PERSON, NOT A RÉSUMÉ</div></div>}
-  <div className={`cursor ${mode?'cursor-active':''}`} style={{left:cursor.x,top:cursor.y}}><span>{mode}</span></div><div className="noise"/>
-  <header className="nav"><button className="logo" onClick={()=>go('home')} {...interactive('HOME')}>PS<span>↘</span></button><div className="nav-live"><span>ABU DHABI</span><b>{clock}</b></div><button className={`menu-trigger ${menu?'is-open':''}`} onClick={()=>setMenu(!menu)} {...interactive(menu?'CLOSE':'MENU')}><span>MENU</span><i><b/><b/></i></button></header>
-  <div className={`menu-screen ${menu?'is-open':''}`}><div className="menu-meta"><span>WHERE TO?</span><span>00 — 04</span></div><div className="menu-links">{[['00','HOME','home'],['01','THINGS I MADE','work'],['02','WHO I AM','about'],['03','RIGHT NOW','now']].map(([n,l,id])=><button key={id} onClick={()=>go(id)} {...interactive('GO')}><small>{n}</small><strong>{l}</strong><em>↗</em></button>)}</div><div className="menu-bottom"><span>curious by default.</span><a href="mailto:preshitashinde09@gmail.com">preshitashinde09@gmail.com</a></div></div>
-  <main>
-   <section id="home" className="hero"><div className="hero-top"><span>01 / 04</span><span>NOT A PORTFOLIO. PROBABLY.</span></div><div className="hero-center"><div className="hero-note">HI, I'M PRESHITA.<br/><i>I LIKE MAKING THINGS.</i></div><h1><span>PRESHITA</span><span className="shift">SHINDE</span></h1><div className="hero-annotation"><span>↘</span> developer<br/>researcher<br/>professional question-asker</div></div><div className="hero-bottom"><div><span className="blink-dot"/> currently somewhere between <i>“what if?”</i> and <i>“let's build it.”</i></div><button onClick={()=>go('work')} {...interactive('SCROLL')}>KEEP GOING ↓</button></div><div className="scribble s1">?</div><div className="scribble s2">↗</div><div className="scribble s3">interesting.</div></section>
-   <section id="work" className="work"><div className="section-top"><span>02 / 04</span><span>THINGS I MADE</span><span>03 / SO FAR</span></div><div className="work-heading"><h2>stuff that<br/><i>escaped my brain.</i></h2><p>Hover. Don't overthink it.<br/>Click if something catches you.</p></div><div className="project-list">{projects.map((p,i)=><a className={`project ${active===i?'selected':''}`} href={p.url} target="_blank" rel="noreferrer" key={p.id} onMouseEnter={()=>{setActive(i);setMode('OPEN ↗')}} onMouseLeave={()=>{setActive(null);setMode('')}}><span className="p-num">{p.id}</span><div className="p-name"><h3>{p.name}</h3><p>{p.text}</p></div><span className="p-tag">{p.tag}<br/>20{p.year}</span><span className="p-arrow">↗</span></a>)}</div><div ref={preview} className={`floating-preview ${active!==null?'show':''}`}>{active!==null&&<><span>{projects[active].symbol}</span><small>{projects[active].tag}</small><i>hover / click</i></>}</div></section>
-   <section className="life-strip"><div className="strip-label">A FEW THINGS THAT HAVE HAPPENED</div><div className="marquee"><div>{[...life,...life].map((x,i)=><span key={i}>{x}<b>✳</b></span>)}</div></div></section>
-   <section id="about" className="about"><div className="section-top light"><span>03 / 04</span><span>A LITTLE CONTEXT</span><span>NO, REALLY.</span></div><div className="about-top"><div className="about-sticker">MADE OF<br/><strong>QUESTIONS</strong><br/>+ TOO MANY TABS</div><h2>I DON'T REALLY<br/>KNOW WHAT I'LL<br/><i>BE YET.</i></h2></div><div className="about-bottom"><p>And I think that's fun. I'm interested in technology because it lets me turn a question into something I can actually touch, break, test, redesign and show someone.</p><p>AI. People. Research. Design. Stories. MUN. TEDx. Weird ideas at inconvenient hours.</p></div><div className="interest-cloud">{['AI','PEOPLE','CODE','RESEARCH','MUN','TEDx','HORROR','FASHION','MAKEUP','STORIES','WHY?','WHAT IF?'].map((x,i)=><span key={x} className={`cloud-${i}`} {...interactive('HI')}>{x}</span>)}</div></section>
-   <section id="now" className="now"><div className="section-top"><span>04 / 04</span><span>RIGHT NOW</span><span>LIVE / 2026</span></div><div className="now-intro"><h2>currently<br/><i>obsessed with</i>...</h2><span>← things change.<br/>so this does too.</span></div><div className="now-list">{now.map(([a,b],i)=><div className="now-row" key={a}><span>0{i+1}</span><em>{a}</em><strong>{b}</strong><i>↗</i></div>)}</div><div className="now-marquee"><span>STILL FIGURING IT OUT · STILL MAKING THINGS · STILL CURIOUS · </span><span>STILL FIGURING IT OUT · STILL MAKING THINGS · STILL CURIOUS · </span></div></section>
-   <footer className="footer"><div className="footer-meta"><span>YOU MADE IT THIS FAR.</span><span>THAT'S KIND OF NICE.</span></div><div className="footer-main"><div className="footer-question">want to<br/><i>say hi?</i></div><a href="mailto:preshitashinde09@gmail.com" {...interactive('EMAIL')}>preshitashinde09<br/>@gmail.com <span>↗</span></a></div><div className="footer-bottom"><span>PRESHITA SHINDE</span><a href="https://github.com/raevn45" target="_blank" rel="noreferrer" {...interactive('GITHUB')}>GITHUB ↗</a><span>ABU DHABI / 2026</span></div></footer>
+ const [menu,setMenu]=useState(false); const [active,setActive]=useState(null); const [mouse,setMouse]=useState({x:0,y:0}); const [time,setTime]=useState('');
+ useEffect(()=>{const move=e=>setMouse({x:e.clientX,y:e.clientY}); window.addEventListener('pointermove',move); const tick=()=>setTime(new Intl.DateTimeFormat('en',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Asia/Dubai'}).format(new Date())); tick(); const id=setInterval(tick,30000); return()=>{window.removeEventListener('pointermove',move);clearInterval(id)}},[]);
+ const jump=id=>{setMenu(false);document.getElementById(id)?.scrollIntoView({behavior:'smooth'})};
+ return <div className="page" style={{'--mx':`${mouse.x}px`,'--my':`${mouse.y}px`}}>
+  <div className="grain"/>
+  <header><button className="brand" onClick={()=>jump('top')} aria-label="home"><span>p</span><i>s</i></button><div className="header-time">ABU DHABI&nbsp;&nbsp; {time}</div><button className="open-menu" onClick={()=>setMenu(true)}>INDEX <span>↗</span></button></header>
+  <div className={`index ${menu?'on':''}`}><button className="close" onClick={()=>setMenu(false)}>CLOSE <span>×</span></button><div className="index-title">INDEX</div><nav>{[['00','home','top'],['01','work','work'],['02','about','about'],['03','now','now']].map(([n,t,id])=><button key={id} onClick={()=>jump(id)}><small>{n}</small><b>{t}</b><em>↗</em></button>)}</nav><div className="index-foot"><span>preshita shinde / 2026</span><a href="mailto:preshitashinde09@gmail.com">preshitashinde09@gmail.com</a></div></div>
+  <main id="top">
+   <section className="landing">
+    <div className="tiny top-left">PRESHITA SHINDE / 00—04</div><div className="tiny top-right">A WEBSITE ABOUT MAKING THINGS</div>
+    <div className="landing-word"><span>preshita</span><span className="serif">shinde</span></div>
+    <div className="landing-aside"><span className="dot"/> currently<br/><strong>curious.</strong><br/>occasionally<br/>overcomplicating it.</div>
+    <div className="landing-bottom"><span>scroll to investigate ↓</span><span>AI · CODE · PEOPLE · QUESTIONS</span></div>
+    <div className="cursor-note">move<br/>around</div>
+   </section>
+
+   <section id="work" className="work">
+    <div className="rule-head"><span>01</span><span>THINGS I MADE</span><span>SELECT ONE</span></div>
+    <div className="work-intro"><h2>some things<br/><span>i couldn't stop thinking about.</span></h2><p>Not a case-study museum.<br/>Just the things that survived<br/>the “what if?” stage.</p></div>
+    <div className="projects">{projects.map((p,i)=><a href={p.url} target="_blank" rel="noreferrer" className={`project-row ${active===i?'active':''}`} key={p.name} onMouseEnter={()=>setActive(i)} onMouseLeave={()=>setActive(null)}><span className="num">{p.n}</span><div className="project-name"><h3>{p.name}</h3><p>{p.note}</p></div><span className="type">{p.type}</span><span className="arrow">↗</span></a>)}</div>
+    <div className="project-stage">{active===null?<div className="stage-empty">HOVER A PROJECT</div>:<div className={`stage-art ${projects[active].art}`}><span>{projects[active].n}</span><strong>{projects[active].name}</strong><i>open ↗</i></div>}</div>
+   </section>
+
+   <section className="statement"><div className="rule-head light"><span>02</span><span>A LITTLE CONTEXT</span><span>KEEP SCROLLING</span></div><div className="statement-main"><div className="margin-note">I LIKE QUESTIONS<br/>MORE THAN TITLES.</div><h2>I don't have<br/>a five-year plan.<br/><em>thank god.</em></h2></div><div className="statement-copy"><p>I like making things because a thought feels different once it exists outside your head. You can poke it, break it, give it to someone else and discover you were wrong.</p><p>I'm somewhere between computer science, AI, research, people, stories and whatever interesting thing happens to cross my path next.</p></div><div className="floating-words"><span>WHY?</span><span>WHAT IF?</span><span>OKAY BUT—</span><span>LET'S BUILD IT.</span></div></section>
+
+   <section className="life"><div className="rule-head"><span>03</span><span>OTHER THINGS</span><span>THE HUMAN PART</span></div><div className="life-title">things i've<br/><em>ended up doing.</em></div><div className="life-grid"><span>HEAD GIRL</span><span>MUN</span><span>TEDx</span><span>AI RESEARCH</span><span>STORIES</span><span>HORROR MOVIES</span><span>FASHION</span><span>MAKEUP</span><span>PEOPLE</span><span>QUESTIONS</span></div></section>
+
+   <section id="now" className="now"><div className="rule-head"><span>04</span><span>RIGHT NOW</span><span>LIVE / 2026</span></div><div className="now-title">currently<br/><em>in progress.</em></div><div className="now-list"><div><small>01</small><span>building</span><strong>CanBook</strong></div><div><small>02</small><span>researching</span><strong>AI generalisation</strong></div><div><small>03</small><span>learning</span><strong>how to make better things</strong></div><div><small>04</small><span>figuring out</span><strong>what comes next</strong></div></div></section>
+
+   <footer><div className="footer-top"><span>05 / END</span><span>YOU FOUND ME.</span></div><div className="footer-center"><div>say<br/><em>hi.</em></div><a href="mailto:preshitashinde09@gmail.com">preshitashinde09@gmail.com <span>↗</span></a></div><div className="footer-bottom"><span>PS / PRESHITA SHINDE</span><a href="https://github.com/raevn45" target="_blank" rel="noreferrer">GITHUB ↗</a><span>ABU DHABI / 2026</span></div></footer>
   </main>
  </div>
 }
