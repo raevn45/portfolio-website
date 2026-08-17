@@ -1,0 +1,7 @@
+/* Cursor v2 — quiet, tactile, editorial. No crosshair, no giant circle. */
+.cursor{width:18px!important;height:18px!important;border:0!important;border-radius:50%!important;background:var(--lime)!important;box-shadow:0 0 0 1px rgba(9,9,11,.35),0 0 24px rgba(217,255,63,.22)!important;mix-blend-mode:normal!important;display:block!important;transition:width .28s var(--ease),height .28s var(--ease),transform .18s ease,background .28s ease,box-shadow .28s ease!important}
+.cursor:before,.cursor:after{display:none!important}
+.cursor span{position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;background:transparent!important;color:var(--ink)!important;padding:0!important;font:700 5px var(--mono)!important;letter-spacing:.08em!important;opacity:0!important;transition:opacity .2s ease!important}
+.cursor.cursor-hover{width:54px!important;height:54px!important;background:var(--paper)!important;box-shadow:0 0 0 1px var(--ink),0 0 0 8px rgba(217,255,63,.16)!important}
+.cursor.cursor-hover span{opacity:1!important}
+@media (pointer:coarse){.cursor{display:none!important}}
