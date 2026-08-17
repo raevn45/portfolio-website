@@ -1,0 +1,67 @@
+:root{--motion-ease:cubic-bezier(.16,1,.3,1)}
+
+/* Cursor: quieter, more tactile, less intrusive. */
+.cursor{width:10px!important;height:10px!important;border:0!important;border-radius:50%!important;background:var(--lime)!important;mix-blend-mode:normal!important;box-shadow:0 0 0 1px #09090b55,0 0 18px #d9ff3f66;transition:width .25s var(--motion-ease),height .25s var(--motion-ease),background .25s ease,box-shadow .25s ease!important}
+.cursor:before,.cursor:after{display:none!important}.cursor span{display:none!important}
+
+/* Make the page feel animated rather than a stack of static posters. */
+.world,.portal{transform-origin:50% 50%;will-change:transform}
+.world{animation:world-breathe 9s ease-in-out infinite alternate}
+@keyframes world-breathe{from{background-position:0 0}to{background-position:18px -22px}}
+
+/* Stronger tube illusion: layered depth, rotation and forward motion. */
+.portal{isolation:isolate;transform-style:preserve-3d}
+.portal:before{animation:tube-ring-deep 4.8s var(--motion-ease) infinite alternate!important}
+.portal:after{animation:tube-ring-deep 6.8s var(--motion-ease) infinite alternate-reverse!important}
+.portal .tube{transform-style:preserve-3d;animation:tube-flight 5.2s var(--motion-ease) infinite alternate!important;text-shadow:0 2px 0 #0002,0 18px 40px #0003}
+.portal .tube:before,.portal .tube:after{content:'';position:absolute;inset:-24% -30%;border:1px solid currentColor;border-radius:50%;opacity:.16;transform:rotateX(72deg) translateZ(-90px);pointer-events:none}
+.portal .tube:after{inset:-48% -60%;opacity:.08;transform:rotateX(72deg) translateZ(-190px)}
+@keyframes tube-ring-deep{0%{transform:rotateX(72deg) scale(.28) translateZ(-260px);opacity:.12}50%{opacity:.42}100%{transform:rotateX(72deg) scale(1.7) translateZ(260px);opacity:.78}}
+@keyframes tube-flight{0%{transform:translateZ(-180px) scale(.72) rotateX(9deg);filter:blur(1px)}45%{transform:translateZ(20px) scale(1) rotateX(0);filter:blur(0)}100%{transform:translateZ(180px) scale(1.08) rotateX(-9deg);filter:blur(.3px)}}
+
+/* Portal colors gain depth instead of reading as flat blocks. */
+.portal-blue{background:radial-gradient(circle at 50% 48%,#3847ff 0,#171832 18%,#09090b 55%,#030304 100%)!important}
+.portal-pink{background:radial-gradient(circle at 50% 45%,#ffb2d5 0,#ff72b9 20%,#bd3e85 55%,#42172e 100%)!important}
+.portal-dark{background:radial-gradient(circle at 50% 45%,#25252b 0,#111 38%,#050506 100%)!important}
+.portal-paper{background:radial-gradient(circle at 50% 50%,#fffdf6 0,#f4f0e7 50%,#d7d0c1 100%)!important}
+
+/* Projects should feel like objects entering the viewport. */
+.project{transform-style:preserve-3d}
+.project:hover{transform:translate3d(16px,-8px,30px) rotate(-.8deg)!important}
+.project-body{transition:transform .7s var(--motion-ease)}
+.project:hover .project-body{transform:translateZ(14px)}
+.project-world:before{animation:project-orbit 5.5s linear infinite!important}
+.project-world:after{animation:project-orbit 3.5s linear infinite reverse!important}
+@keyframes project-orbit{to{transform:scaleY(.36) rotate(360deg) translateX(8px)}}
+
+/* Interest pills become a living field. */
+.interest-cloud span{transition:transform .55s var(--motion-ease),background .35s ease,box-shadow .35s ease}
+.interest-cloud span:hover{transform:translateY(-10px) rotate(calc((var(--i) - 5) * 1deg)) scale(1.14)!important;background:var(--lime);box-shadow:10px 10px 0 #09090b55}
+
+/* Keep the giant typographic moments spaced and readable. */
+.home-lines{gap:28px!important;margin-top:42px!important}
+.build-heading{gap:10vw!important}
+.build-heading>p{padding-bottom:10px}
+
+/* Remove visual repetition from the old BUILD-heavy hierarchy. */
+.world-build .build-heading h2{letter-spacing:-.105em}
+.world-build .section-meta b{letter-spacing:.16em}
+
+/* More life in the home scene. */
+.world-home .home-copy h1{animation:hero-settle 1.2s var(--motion-ease) both}
+.world-home .portrait{animation:portrait-drift 7s ease-in-out infinite alternate}
+@keyframes hero-settle{from{opacity:0;transform:translateY(35px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes portrait-drift{from{transform:rotate(5deg) translate3d(0,0,0)}to{transform:rotate(2deg) translate3d(-10px,-16px,0)}}
+
+@media (max-width:700px){
+ .cursor{display:none!important}
+ .home-lines{gap:14px!important;margin-left:0!important}
+ .build-heading{grid-template-columns:1fr!important;gap:28px!important}
+ .project-body{grid-template-columns:1fr!important}
+ .project-world{min-height:170px}
+ .portal .tube{font-size:clamp(72px,18vw,140px)}
+}
+
+@media (prefers-reduced-motion:reduce){
+ *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
+}
