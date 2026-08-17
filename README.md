@@ -1,6 +1,6 @@
 # Preshita Shinde — Personal Website
 
-An immersive personal portfolio and internet playground for **Preshita Shinde** — built around curiosity, experimentation, live projects, rabbit holes, and a deliberately editorial visual experience.
+An immersive personal portfolio and internet playground — built around curiosity, experimentation, live projects, rabbit holes, and a deliberately editorial visual experience.
 
 This is not intended to be a traditional résumé site. It is a personal corner of the internet: part portfolio, part digital journal, and part interactive experience.
 
