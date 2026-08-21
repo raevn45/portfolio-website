@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { animate, stagger } from 'animejs';
 import { gsap } from 'gsap';
-import { animated, useSpring } from '@react-spring/web';
+import { animated, useSpring } from 'react-spring';
 import './experience.css';
 import './experience-overrides.css';
 import './profile.css';
