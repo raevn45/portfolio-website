@@ -1,29 +1,30 @@
 {
   "name": "preshita-portfolio",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "private": true,
+  "engines": { "node": ">=20.9.0" },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start"
   },
   "dependencies": {
-    "@react-three/drei": "latest",
-    "@react-three/fiber": "latest",
-    "@react-spring/web": "latest",
-    "animejs": "latest",
-    "framer-motion": "latest",
-    "gsap": "latest",
-    "lenis": "latest",
-    "lucide-react": "latest",
-    "motion": "latest",
-    "next": "latest",
-    "react": "latest",
-    "react-dom": "latest",
-    "three": "latest"
+    "@react-three/drei": "10.7.6",
+    "@react-three/fiber": "9.3.0",
+    "@react-spring/web": "9.7.5",
+    "animejs": "4.2.2",
+    "framer-motion": "12.23.12",
+    "gsap": "3.13.0",
+    "lenis": "1.3.14",
+    "lucide-react": "0.468.0",
+    "motion": "12.23.12",
+    "next": "15.5.7",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "three": "0.180.0"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "latest",
-    "tailwindcss": "latest"
+    "@tailwindcss/postcss": "4.1.12",
+    "tailwindcss": "4.1.12"
   }
 }
